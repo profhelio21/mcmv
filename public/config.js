@@ -214,5 +214,4 @@ window.MCMV_CONFIG = {
   tempoInatividadeSeg: 120, // sem tocar na tela por esse tempo → limpa os dados (privacidade no quiosque)
   tempoInatividadePlantaSeg: 90, // no quiosque: sem toque na aba "Projeto na planta", volta para a tela inicial (e apaga as marcações)
   tempoReinicioResultadoSeg: 90, // depois do resultado, volta sozinho para a tela inicial
-}; depois do resultado, volta sozinho para a tela inicial
 };
