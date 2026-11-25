@@ -46,6 +46,7 @@ function xlsxDasInscricoes(itens) {
     { titulo: "CPF", largura: 16 },
     { titulo: "Data de nascimento", largura: 14 },
     { titulo: "Telefone / WhatsApp", largura: 18 },
+    { titulo: "Empreendimento(s) de interesse", largura: 36 },
     { titulo: "E-mail", largura: 28 },
     { titulo: "Cidade", largura: 16 },
     { titulo: "Bairro", largura: 20 },
@@ -69,6 +70,7 @@ function xlsxDasInscricoes(itens) {
     fmtCpf(x.cpf),
     fmtData(x.nascimento),
     fmtTel(x.telefone),
+    (x.empreendimentos || []).join(", ") || "Ainda não escolheu",
     x.email || "",
     x.cidade,
     x.bairro,
@@ -84,7 +86,36 @@ function xlsxDasInscricoes(itens) {
     ROTULOS.resultado[x.resultado] || x.resultado,
     x.origem === "quiosque" ? "Quiosque" : "Link",
   ]);
-  return gerarXlsx({ aba: "Interessados", colunas, linhas });
+  return gerarXlsx({ abas: [{ aba: "Interessados", colunas, linhas }, resumoPorEmpreendimento(itens)] });
+}
+
+// Segunda aba da planilha: quantas pessoas marcaram interesse em cada empreendimento.
+// Cada pessoa pode marcar mais de um, então a soma pode passar do total de cadastros.
+function resumoPorEmpreendimento(itens) {
+  const contagem = new Map();
+  let semEscolha = 0;
+  for (const x of itens) {
+    const lista = x.empreendimentos || [];
+    if (!lista.length) semEscolha++;
+    for (const nome of lista) contagem.set(nome, (contagem.get(nome) || 0) + 1);
+  }
+  const total = itens.length;
+  const pct = (q) => (total ? q / total : 0);
+  const linhas = [...contagem.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR"))
+    .map(([nome, q]) => [nome, q, pct(q)]);
+  linhas.push(["Ainda não escolheram", semEscolha, pct(semEscolha)]);
+  linhas.push(["Total de cadastros", total, total ? 1 : 0]);
+  return {
+    aba: "Resumo por empreendimento",
+    filtro: false,
+    colunas: [
+      { titulo: "Empreendimento", largura: 34 },
+      { titulo: "Interessados (cada pessoa pode marcar mais de um)", largura: 30, tipo: "numero" },
+      { titulo: "% dos cadastros", largura: 16, tipo: "percentual" },
+    ],
+    linhas,
+  };
 }
 
 export default async (req) => {
@@ -139,6 +170,11 @@ export default async (req) => {
       },
     });
   }
+
+  return json({ erro: "Rota não encontrada." }, 404);
+};
+
+export const config = { path: "/api/admin/*" };
 
   return json({ erro: "Rota não encontrada." }, 404);
 };
