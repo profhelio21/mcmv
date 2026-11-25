@@ -67,7 +67,7 @@
   .faixa-rolante span{margin:0 2rem}
   @keyframes rola{to{transform:translateX(-100%)}}
 
-  /* ---------- Aba: Conheça o decorado ---------- */
+  /* ---------- Aba: Conheça o projeto na planta ---------- */
   .dec-wrap{max-width:1180px;margin:0 auto;padding:clamp(1rem,3vw,2.2rem) clamp(1rem,3vw,2rem) 3rem}
   .dec-cab h2{font-size:clamp(1.8rem,3vw + .5rem,2.9rem);line-height:1.1;color:var(--verde-escuro);margin:.6rem 0 .5rem;letter-spacing:-.01em}
   .dec-cab p{color:var(--cinza);max-width:46rem;font-size:1.05rem}
@@ -242,8 +242,8 @@
   <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fbbf24"/><path d="M9 25 24 11l15 14" fill="none" stroke="#0b3d3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 23v14h20V23" fill="#0b3d3a"/><rect x="21" y="28" width="6" height="9" rx="1" fill="#fbbf24"/></svg>
   <b id="nomeEmpreendimento"></b>
   <nav class="abas" id="abas" aria-label="Seções do site">
-    <button type="button" class="aba ativa" data-aba="inicio">📋 Cadastro</button>
-    <button type="button" class="aba" data-aba="decorado">🏠 Conheça o decorado</button>
+    <button type="button" class="aba ativa" data-aba="inicio"> Cadastro</button>
+    <button type="button" class="aba" data-aba="decorado"> Conheça o projeto na planta</button>
   </nav>
 </header>
 
@@ -256,13 +256,13 @@
       <h1>Realize o sonho da <em>casa própria</em></h1>
       <p class="frase" id="frase"></p>
       <div class="chips">
-        <span class="chip">📋 Cadastro rápido</span>
-        <span class="chip">🏙️ Apartamentos no Centro</span>
-        <span class="chip">🤝 Atendimento no quiosque</span>
+        <span class="chip"> Cadastro rápido</span>
+        <span class="chip"> Apartamentos no Centro</span>
+        <span class="chip"> Atendimento no quiosque</span>
       </div>
       <div class="acoes-hero">
         <button class="btn-grande pulsa" id="btnComecar" type="button">Quero me cadastrar <span aria-hidden="true">→</span></button>
-        <button class="btn-sec" id="btnVerDecorado" type="button">🏠 Ver o decorado</button>
+        <button class="btn-sec" id="btnVerDecorado" type="button"> Ver o decorado</button>
       </div>
       <small class="nota-mini">Leva menos de 3 minutos. Toque no botão para começar.</small>
     </div>
@@ -270,18 +270,18 @@
   <div class="faixa-rolante" aria-hidden="true"><div id="rolante"></div></div>
 </section>
 
-<!-- ============ ABA: CONHEÇA O DECORADO ============ -->
+<!-- ============ ABA: CONHEÇA O projeto na planta============ -->
 <section id="tela-decorado" class="tela">
   <div class="dec-wrap">
     <div class="dec-cab">
-      <span class="selo">Conheça o decorado</span>
+      <span class="selo">Conheça o projeto na planta</span>
       <h2 id="decTitulo"></h2>
       <p id="decSub"></p>
     </div>
-    <h3 class="dec-h3">🏢 Escolha um empreendimento</h3>
+    <h3 class="dec-h3"> Escolha um empreendimento</h3>
     <div class="dec-grid" id="decGrid"></div>
     <div id="decVideosSecao">
-      <h3 class="dec-h3">🎬 Vídeos</h3>
+      <h3 class="dec-h3"> Vídeos</h3>
       <div class="dec-videos" id="decVideos"></div>
     </div>
     <div class="dec-cta">
@@ -473,7 +473,7 @@
     <div class="protocolo">Seu protocolo: <b id="resProtocolo"></b></div>
     <p class="aviso-legal" id="resAviso"></p>
     <button class="btn btn-novo" id="btnNovo" type="button">Novo cadastro</button>
-    <button class="btn-link" id="btnResDecorado" type="button">🏠 Conhecer o decorado enquanto isso</button>
+    <button class="btn-link" id="btnResDecorado" type="button"> Conhecer o o projeto na planta enquanto isso</button>
     <div class="reinicio" id="reinicio"></div>
   </div>
 </section>
@@ -482,9 +482,9 @@
   <div class="visor-caixa">
     <div class="visor-topo"><h3 id="visorTitulo"></h3><button class="visor-x" id="visorFechar" type="button" aria-label="Fechar">✕</button></div>
     <div class="visor-abas" id="visorAbas">
-      <button type="button" data-pg="p2"><span class="ico">🛋️ </span>Imagens<span class="ext"> e plantas</span></button>
-      <button type="button" data-pg="p1"><span class="ico">🏢 </span>Fachada<span class="ext"> e dados</span></button>
-      <button type="button" data-pg="resumo"><span class="ico">📋 </span>Resumo</button>
+      <button type="button" data-pg="p2"><span class="ico"> </span>Imagens<span class="ext"> e plantas</span></button>
+      <button type="button" data-pg="p1"><span class="ico"> </span>Fachada<span class="ext"> e dados</span></button>
+      <button type="button" data-pg="resumo"><span class="ico"> </span>Resumo</button>
       <span class="visor-zoom" id="visorZoom"><button type="button" id="zMenos" aria-label="Diminuir">−</button><span id="zTxt">100%</span><button type="button" id="zMais" aria-label="Aumentar">+</button></span>
     </div>
     <div class="visor-cena" id="visorCena"><img id="visorImg" alt=""></div>
@@ -528,7 +528,7 @@ const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 
 /* ---------- Topo, frases, rolante ---------- */
 $("#nomeEmpreendimento").textContent = C.empreendimento;
-$("#rolante").innerHTML = [...C.frases, ...C.frases].map(f => `<span>🏠 ${f}</span>`).join("");
+$("#rolante").innerHTML = [...C.frases, ...C.frases].map(f => `<span> ${f}</span>`).join("");
 let idxFrase = 0;
 const elFrase = $("#frase");
 elFrase.textContent = C.frases[0];
@@ -582,11 +582,11 @@ setInterval(() => {
   </svg>${selo}`;
 })();
 
-/* ---------- Aba "Conheça o decorado" ---------- */
+/* ---------- Aba "Conheça o projeto na planta " ---------- */
 const D = C.decorado || { empreendimentos: [] };
 const EMPS = D.empreendimentos || [];
 (function montarDecorado() {
-  $("#decTitulo").textContent = D.titulo || "Conheça o decorado";
+  $("#decTitulo").textContent = D.titulo || "Conheça o projeto na planta";
   $("#decSub").textContent = D.subtitulo || "";
   $("#decAviso").textContent = D.aviso || "";
   $("#decGrid").innerHTML = EMPS.map(e => `<button type="button" class="dec-card" data-id="${esc(e.id)}">
@@ -594,7 +594,7 @@ const EMPS = D.empreendimentos || [];
       <div class="dec-card-corpo">
         <h4>${esc(e.nome)}</h4>
         <p class="dec-meta">${e.apartamentos ? esc(e.apartamentos) + " apartamentos · " + esc(e.metragem) : "Apartamentos de " + esc(e.metragem)}</p>
-        <p class="dec-loc">📍 ${esc(e.ondeFica)}</p>
+        <p class="dec-loc"> ${esc(e.ondeFica)}</p>
         <div class="dec-chips">${(e.lazer || []).slice(0, 3).map(l => `<span>${esc(l)}</span>`).join("")}</div>
         <span class="dec-ver">Ver apartamentos e plantas →</span>
       </div></button>`).join("");
@@ -624,7 +624,7 @@ function htmlResumo(e) {
     <div class="res-stats">${stat("Apartamentos", aptos)}${stat("Metragem dos apartamentos", e.metragem)}${stat("Vagas", e.vagas)}${stat("Lojas / comércio", e.lojas)}${stat("Área total construída", e.areaConstruida)}</div>
     <h4>Tipos de apartamento</h4>
     <table><thead><tr><th>Tipo</th><th>Área</th><th>Unidades</th></tr></thead><tbody>${(e.tipos || []).map(t => `<tr><td>${esc(t.nome)}</td><td>${esc(t.area)}</td><td>${esc(t.unidades)}</td></tr>`).join("")}</tbody></table>
-    <h4>📍 Onde fica</h4><p>${esc(e.localizacao)}</p>
+    <h4> Onde fica</h4><p>${esc(e.localizacao)}</p>
     <h4>Lazer e estrutura</h4><div class="dec-chips">${(e.lazer || []).map(l => `<span>${esc(l)}</span>`).join("")}</div>
     <h4>${esc(e.pavimentosTitulo || "Pavimento a pavimento")}</h4>
     <table><tbody>${(e.pavimentos || []).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("")}</tbody></table>`;
@@ -747,7 +747,7 @@ function irEtapa(i) {
   $$(".passo-bolinha").forEach((b, k) => { b.classList.toggle("feito", k < i); b.classList.toggle("atual", k === i); });
   $("#passoTexto").textContent = `Etapa ${i + 1} de 3`;
   $("#passoPct").textContent = Math.round(((i + 1) / 3) * 100) + "%";
-  $("#incentivo").textContent = "✨ " + C.frasesEtapas[i];
+  $("#incentivo").textContent = C.frasesEtapas[i];
   $("#btnVoltar").style.visibility = i === 0 ? "hidden" : "visible";
   $("#btnProximo").style.display = i === 2 ? "none" : "";
   $("#btnFinalizar").style.display = i === 2 ? "" : "none";
@@ -828,8 +828,8 @@ function mostrarResultado(r) {
   texto("resMsg", T.destaque || res.mensagem);
   texto("resChamada", T.chamada);
   texto("resLocalNome", "Compareça: " + L.nome);
-  texto("resLocalEnd", L.endereco ? "📍 " + L.endereco : "");
-  texto("resLocalHorario", L.horario ? "🕘 " + L.horario : "");
+  texto("resLocalEnd", L.endereco ? " " + L.endereco : "");
+  texto("resLocalHorario", L.horario ? " " + L.horario : "");
   $("#resLevar").innerHTML = (L.levar || []).map(x => `<li><i aria-hidden="true">${esc(x.icone || "✔")}</i><span>${esc(x.texto)}</span></li>`).join("");
   texto("resApoio", T.apoio);
   texto("resAviso", T.aviso);
@@ -867,12 +867,12 @@ function reiniciar() {
   limparDados();
   mostrar("inicio");
 }
-// da tela final, a pessoa pode ir ver o decorado (os dados do cadastro já foram apagados da tela)
-$("#btnResDecorado").addEventListener("click", () => { clearInterval(timerReinicio); limparDados(); mostrar("decorado"); });
+// da tela final, a pessoa pode ir ver o projeto na planta (os dados do cadastro já foram apagados da tela)
+$("#btnResDecorado").addEventListener("click", () => { clearInterval(timerReinicio); limparDados(); mostrar("projeto na planta); });
 let timerInativo = null, timerModal = null;
 function agendarInatividade() {
   clearTimeout(timerInativo);
-  if (telaAtual === "decorado" && origem === "quiosque") {   // no quiosque, o decorado também volta sozinho ao início
+  if (telaAtual === "projeto na planta" && origem === "quiosque") {   // no quiosque, o projeto na planta também volta sozinho ao início
     timerInativo = setTimeout(() => mostrar("inicio"), (C.tempoInatividadeDecoradoSeg || 90) * 1000);
     return;
   }
