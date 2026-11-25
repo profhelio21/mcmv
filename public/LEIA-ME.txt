@@ -1,0 +1,13 @@
+Coloque aqui os vídeos ilustrativos dos apartamentos (.mp4, H.264, de preferência até 15 MB cada —
+o GitHub não aceita upload de arquivo acima de 25 MB pelo navegador).
+Depois liste-os em public/config.js, no campo "videos":
+
+  videos: [
+    { src: "videos/mix-olavo-bilac.mp4", poster: "videos/mix-olavo-bilac.jpg", titulo: "Mix Olavo Bilac — perto de tudo", retrato: true },
+    { src: "videos/area-lazer.mp4",      titulo: "Área de lazer" },
+  ],
+
+- O primeiro vídeo (e os seguintes, em sequência) toca na tela inicial; todos aparecem na aba "Conheça o decorado".
+- poster = imagem de capa (opcional). Para gerar uma: ffmpeg -ss 0.5 -i video.mp4 -frames:v 1 -vf scale=576:-1 capa.jpg
+- Vídeo vertical (9:16, como os do WhatsApp) é reconhecido sozinho e ganha moldura em pé, sem cortar a imagem.
+- Sem vídeos, aparece uma animação do prédio.
