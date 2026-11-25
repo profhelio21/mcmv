@@ -95,6 +95,19 @@ export function validar(body) {
 
   if (body.consentimento !== true) erros.consentimento = "É necessário aceitar para concluir.";
 
+  // Empreendimentos de interesse (opcional): só nomes em texto simples, no máximo 6, sem repetir.
+  const limparNome = (n) =>
+    String(n ?? "")
+      .normalize("NFC")
+      .replace(/[^\p{L}\p{N} .'\-]/gu, "")
+      .replace(/\s+/g, " ")
+      .replace(/^[ .'\-]+/, "")
+      .trim()
+      .slice(0, 60);
+  d.empreendimentos = Array.isArray(body.empreendimentos)
+    ? [...new Set(body.empreendimentos.map(limparNome).filter(Boolean))].slice(0, 6)
+    : [];
+
   d.origem = body.origem === "quiosque" ? "quiosque" : "link";
 
   return { ok: Object.keys(erros).length === 0, erros, dados: d };
