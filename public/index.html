@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b3d3a">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/png" href="img/logo-mcmv.png">
 <title>Cadastro de Interessados · Minha Casa, Minha Vida</title>
 <style>
   :root{
@@ -19,14 +20,15 @@
     -webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
   input,select,textarea{user-select:text}
   button{font:inherit;cursor:pointer}
-  .topo{display:flex;align-items:center;flex-wrap:wrap;gap:.75rem;padding:.8rem clamp(1rem,3vw,2.5rem);background:var(--verde-escuro);color:#fff}
+  .topo{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem 1.2rem;padding:.6rem clamp(1rem,3vw,2.5rem);background:#fff;
+    border-bottom:1px solid var(--linha);box-shadow:0 2px 14px rgba(11,61,58,.09);position:sticky;top:0;z-index:10}
+  .logo{height:clamp(2.7rem,4.2vw,4.4rem);width:auto;display:block;flex:none}
+  .topo-sub{flex:1 1 0;min-width:0;font-weight:700;color:var(--verde-escuro);font-size:.95rem;line-height:1.25;border-left:2px solid var(--linha);padding-left:1.1rem}
   .abas{display:flex;gap:.4rem}
-  .aba{border:2px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:99px;padding:.5rem 1.1rem;font-weight:700;font-size:.92rem;min-height:2.8rem;transition:background .15s,color .15s}
-  .aba.ativa{background:var(--sol);border-color:var(--sol);color:#3b2a00}
+  .aba{border:2px solid var(--verde);background:#fff;color:var(--verde);border-radius:99px;padding:.5rem 1.2rem;font-weight:800;font-size:.95rem;min-height:2.9rem;transition:background .15s,color .15s}
+  .aba.ativa{background:var(--verde);color:#fff}
   body[data-tela=form] .abas,body[data-tela=proc] .abas,body[data-tela=res] .abas{display:none}
-  .topo svg{width:2.2rem;height:2.2rem;flex:none}
-  .topo b{font-size:1rem;letter-spacing:.02em;font-weight:600;flex:1 1 0;min-width:0}
-  .tela{display:none;min-height:calc(100dvh - 4rem);animation:entra .45s ease both}
+  .tela{display:none;min-height:calc(100dvh - 5rem);animation:entra .45s ease both}
   .tela.ativa{display:block}
   @keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
@@ -55,6 +57,7 @@
   .frase.some{opacity:0}
   .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.1rem 0 1.5rem}
   .chip{background:#fff;border:1px solid var(--linha);border-radius:99px;padding:.4rem .9rem;font-size:.85rem;font-weight:600;color:var(--verde-escuro)}
+  .chip::before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:var(--sol-escuro);margin-right:.5rem;vertical-align:.05em}
   .btn-grande{display:inline-flex;align-items:center;justify-content:center;gap:.7rem;border:0;border-radius:99px;padding:1.05rem 2.2rem;
     font-size:1.25rem;font-weight:800;color:#3b2a00;background:linear-gradient(180deg,var(--sol),var(--sol-escuro));
     box-shadow:0 8px 0 #b45309,0 18px 30px rgba(180,83,9,.3);transition:transform .12s,box-shadow .12s}
@@ -65,33 +68,46 @@
   .faixa-rolante{overflow:hidden;background:var(--verde);color:#fff;white-space:nowrap;padding:.7rem 0;margin-top:1.2rem}
   .faixa-rolante div{display:inline-block;padding-left:100%;animation:rola 55s linear infinite;font-weight:600}
   .faixa-rolante span{margin:0 2rem}
+  .faixa-rolante span::before{content:"";display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:var(--sol);margin-right:.9rem;vertical-align:.05em}
+  .nota-programa{max-width:60rem;margin:1rem auto 1.6rem;padding:0 1.2rem;text-align:center;font-size:.78rem;color:var(--cinza)}
   @keyframes rola{to{transform:translateX(-100%)}}
 
-  /* ---------- Aba: Conheça o projeto na planta ---------- */
+  /* ---------- Aba: Projeto na planta ---------- */
   .dec-wrap{max-width:1180px;margin:0 auto;padding:clamp(1rem,3vw,2.2rem) clamp(1rem,3vw,2rem) 3rem}
   .dec-cab h2{font-size:clamp(1.8rem,3vw + .5rem,2.9rem);line-height:1.1;color:var(--verde-escuro);margin:.6rem 0 .5rem;letter-spacing:-.01em}
   .dec-cab p{color:var(--cinza);max-width:46rem;font-size:1.05rem}
   .dec-h3{font-size:1.25rem;color:var(--verde-escuro);margin:2rem 0 .9rem}
   .dec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:1.2rem}
-  .dec-card{display:flex;flex-direction:column;text-align:left;padding:0;border:1px solid var(--linha);border-radius:var(--raio);background:#fff;overflow:hidden;
-    box-shadow:var(--sombra);transition:transform .15s,box-shadow .15s;color:inherit}
-  .dec-card:active{transform:scale(.985)}
-  .dec-card img{width:100%;aspect-ratio:16/11;object-fit:cover;object-position:top;display:block;background:var(--menta)}
+  .dec-card{display:flex;flex-direction:column;text-align:left;border:2px solid var(--linha);border-radius:var(--raio);background:#fff;overflow:hidden;
+    box-shadow:var(--sombra);transition:border-color .15s,box-shadow .15s;color:inherit}
+  .dec-card.marcado{border-color:var(--verde);box-shadow:0 0 0 3px rgba(15,118,110,.22),var(--sombra)}
+  .dec-foto{position:relative;display:block;width:100%;padding:0;border:0;background:var(--menta)}
+  .dec-foto img{width:100%;aspect-ratio:16/11;object-fit:cover;object-position:top;display:block}
+  .dec-marca{display:none;position:absolute;top:.7rem;left:.7rem;background:var(--verde);color:#fff;font-size:.78rem;font-weight:800;padding:.28rem .75rem;border-radius:99px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+  .dec-card.marcado .dec-marca{display:inline-block}
   .dec-card-corpo{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
   .dec-card h4{font-size:1.3rem;color:var(--verde-escuro)}
   .dec-meta{font-weight:700;color:var(--verde)}
-  .dec-loc{font-size:.88rem;color:var(--cinza)}
+  .dec-loc{font-size:.88rem;color:var(--cinza);display:flex;gap:.35rem;align-items:flex-start}
+  .dec-loc svg,.visor-resumo h4 svg{width:1rem;height:1rem;flex:none;margin-top:.15rem;color:var(--sol-escuro)}
+  .visor-resumo h4.com-icone{display:flex;gap:.4rem;align-items:center}
   .dec-chips{display:flex;flex-wrap:wrap;gap:.35rem}
   .dec-chips span{background:var(--menta);color:var(--verde-escuro);font-size:.76rem;font-weight:700;padding:.2rem .65rem;border-radius:99px}
-  .dec-ver{margin-top:auto;padding-top:.6rem;font-weight:800;font-size:.92rem;color:var(--sol-escuro)}
+  .dec-acoes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto;padding-top:.8rem}
+  .dec-acoes button{flex:1 1 8.5rem;min-height:2.9rem;border-radius:99px;font-weight:800;font-size:.9rem;padding:.5rem .9rem}
+  .btn-ver{background:#fff;border:2px solid var(--verde);color:var(--verde)}
+  .btn-int{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;background:var(--sol);border:2px solid var(--sol);color:#3b2a00}
+  .btn-int .ck{display:none;width:1.05rem;height:1.05rem;flex:none}
+  .btn-int[aria-pressed=true]{background:var(--verde);border-color:var(--verde);color:#fff}
+  .btn-int[aria-pressed=true] .ck{display:inline-block}
   .dec-videos{display:flex;flex-wrap:wrap;gap:1.2rem}
   .dec-video{margin:0;width:min(100%,17rem)}
   .dec-video video{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:var(--raio);background:#000;display:block;box-shadow:var(--sombra)}
   .dec-video.paisagem{width:min(100%,30rem)}
   .dec-video.paisagem video{aspect-ratio:16/9}
   .dec-video figcaption{margin-top:.5rem;font-weight:700;color:var(--verde-escuro);font-size:.95rem}
-  .dec-cta{margin:2.2rem 0 1rem;padding:1.4rem;border-radius:var(--raio);background:var(--verde-escuro);color:#fff;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between}
-  .dec-cta p{font-size:1.3rem;font-weight:700}
+  .dec-cta{position:sticky;bottom:.8rem;z-index:5;margin:2.2rem 0 1rem;padding:1.1rem 1.4rem;border-radius:var(--raio);background:var(--verde-escuro);color:#fff;display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;box-shadow:0 12px 30px rgba(11,61,58,.35)}
+  .dec-cta p{font-size:1.2rem;font-weight:700;flex:1 1 16rem}
   .dec-wrap .aviso-legal{max-width:none}
 
   /* visualizador dos totens (tela cheia) */
@@ -100,7 +116,8 @@
   .visor-caixa{background:#fff;width:min(100%,1100px);height:100dvh;display:flex;flex-direction:column}
   .visor-topo{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;background:var(--verde-escuro);color:#fff}
   .visor-topo h3{font-size:1.25rem;flex:1}
-  .visor-x{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:50%;width:2.8rem;height:2.8rem;font-size:1.2rem;font-weight:800}
+  .visor-x{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:50%;width:2.8rem;height:2.8rem;display:grid;place-items:center}
+  .visor-x svg{width:1.3rem;height:1.3rem}
   .visor-abas{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.6rem 1rem;border-bottom:1px solid var(--linha);background:#f7fafa}
   .visor-abas button{border:2px solid var(--linha);background:#fff;border-radius:99px;padding:.5rem 1rem;font-weight:700;font-size:.9rem;min-height:2.8rem;color:var(--cinza)}
   .visor-abas button.ativa{background:var(--verde);border-color:var(--verde);color:#fff}
@@ -122,6 +139,8 @@
   .visor-rodape{padding:.7rem 1rem;border-top:1px solid var(--linha);display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
   .visor-rodape small{color:var(--cinza);font-size:.78rem;flex:1;min-width:12rem}
   .visor-rodape .btn{background:linear-gradient(180deg,var(--sol),var(--sol-escuro));color:#3b2a00;box-shadow:0 5px 0 #b45309}
+  .visor-rodape .btn.btn-int{background:#fff;border:2px solid var(--verde);color:var(--verde);box-shadow:none;display:inline-flex;align-items:center;gap:.45rem}
+  .visor-rodape .btn.btn-int[aria-pressed=true]{background:var(--verde);color:#fff}
 
   /* ---------- Formulário ---------- */
   .form-wrap{max-width:860px;margin:0 auto;padding:clamp(1rem,3vw,2rem) clamp(1rem,3vw,1.5rem) 3rem}
@@ -151,6 +170,7 @@
     font-weight:700;cursor:pointer;background:#fff;transition:all .15s;min-height:3.3rem;display:flex;align-items:center;justify-content:center}
   .opcoes input:checked+label{background:var(--verde);border-color:var(--verde);color:#fff;box-shadow:0 6px 14px rgba(15,118,110,.3)}
   .opcoes input:focus-visible+label{box-shadow:0 0 0 4px rgba(20,184,166,.3)}
+  .opcoes.emp label{min-width:10.5rem}
   .campo.tem-erro .opcoes label{border-color:var(--erro)}
   .renda-grande input{font-size:1.5rem;font-weight:800;color:var(--verde-escuro)}
   .consent{display:flex;gap:.8rem;align-items:flex-start;background:#f7fafa;border:2px solid var(--linha);border-radius:14px;padding:1rem;cursor:pointer;font-size:.88rem;font-weight:500}
@@ -196,7 +216,9 @@
   .res-chamada{margin-top:1.3rem;font-weight:700;color:var(--verde-escuro);max-width:34rem}
   .levar{list-style:none;display:grid;gap:.6rem;margin-top:.9rem}
   .levar li{display:flex;align-items:center;gap:.9rem;background:var(--menta);border-radius:14px;padding:.75rem 1rem;font-weight:800;color:var(--verde-escuro);font-size:1.1rem}
-  .levar li i{font-style:normal;font-size:1.6rem;line-height:1}
+  .levar li i{display:grid;place-items:center;flex:none;width:2.6rem;height:2.6rem;border-radius:50%;background:var(--verde);color:#fff}
+  .levar li i svg{width:1.4rem;height:1.4rem}
+  .res-interesse{margin-top:1rem;max-width:34rem;font-weight:700;color:var(--verde-escuro)}
   .res-apoio{margin-top:1.1rem;max-width:34rem;font-size:1.02rem;background:#fff7e0;border-left:4px solid var(--sol);border-radius:10px;padding:.8rem 1rem;text-align:left}
   .btn-link{margin-top:.9rem;background:none;border:0;color:var(--verde);font-weight:700;text-decoration:underline;font-size:.95rem;min-height:2.8rem}
   .res-local{margin-top:1.6rem;background:#fff;border:2px dashed var(--verde);border-radius:var(--raio);padding:1.2rem 1.6rem;max-width:34rem;width:100%;text-align:left}
@@ -224,12 +246,20 @@
     .hero,.hero.tem-retrato{grid-template-columns:1fr}
     .video-box.retrato{height:min(48vh,26rem)}
     .abas{width:100%}.aba{flex:1;padding:.45rem .5rem;font-size:.85rem;min-height:2.6rem}
-    .topo{gap:.6rem;padding:.6rem 1rem}.topo svg{width:1.9rem;height:1.9rem}.topo b{font-size:.9rem}
+    .topo{gap:.5rem .8rem;padding:.5rem 1rem}.topo-sub{font-size:.8rem;padding-left:.8rem}
     .visor-abas{flex-wrap:nowrap;gap:.35rem;padding:.5rem .6rem}
     .visor-abas button{padding:.4rem .7rem;font-size:.82rem;min-height:2.5rem;white-space:nowrap}
-    .visor-abas .ext,.visor-abas .ico,#zTxt{display:none}
+    .visor-abas .ext,#zTxt{display:none}
     .visor-zoom{margin-left:auto;gap:.3rem}.visor-zoom button{width:2.5rem}
     .video-titulo,.video-selo{max-width:calc(100% - 1.5rem);font-size:.68rem}
+    .topo{position:static}
+    .dec-cta{bottom:.5rem;padding:.7rem .9rem;gap:.5rem}
+    .dec-cta p{font-size:.92rem;flex-basis:100%}
+    .dec-cta .btn-grande{font-size:1rem;padding:.7rem 1rem}
+    .visor-rodape{gap:.5rem;padding:.6rem .7rem}
+    .visor-rodape small{flex:1 1 100%;min-width:0;font-size:.7rem}
+    .visor-rodape .btn{flex:1 1 0;min-width:0;padding:.65rem .5rem;font-size:.85rem;justify-content:center}
+    .opcoes.emp label{flex:1 1 calc(50% - .3rem);min-width:0;padding:.7rem .4rem;font-size:.85rem}
     .linha2{grid-template-columns:1fr}
     .btn-grande{width:100%}
   }
@@ -239,11 +269,11 @@
 <body>
 
 <header class="topo">
-  <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fbbf24"/><path d="M9 25 24 11l15 14" fill="none" stroke="#0b3d3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 23v14h20V23" fill="#0b3d3a"/><rect x="21" y="28" width="6" height="9" rx="1" fill="#fbbf24"/></svg>
-  <b id="nomeEmpreendimento"></b>
+  <img class="logo" src="img/logo-mcmv.png" alt="Minha Casa, Minha Vida" width="240" height="70">
+  <span class="topo-sub" id="nomeEmpreendimento"></span>
   <nav class="abas" id="abas" aria-label="Seções do site">
-    <button type="button" class="aba ativa" data-aba="inicio"> Cadastro</button>
-    <button type="button" class="aba" data-aba="decorado"> Conheça o projeto na planta</button>
+    <button type="button" class="aba ativa" data-aba="inicio">Cadastro</button>
+    <button type="button" class="aba" data-aba="planta">Projeto na planta</button>
   </nav>
 </header>
 
@@ -256,36 +286,37 @@
       <h1>Realize o sonho da <em>casa própria</em></h1>
       <p class="frase" id="frase"></p>
       <div class="chips">
-        <span class="chip"> Cadastro rápido</span>
-        <span class="chip"> Apartamentos no Centro</span>
-        <span class="chip"> Atendimento no quiosque</span>
+        <span class="chip">Cadastro rápido</span>
+        <span class="chip">Apartamentos no Centro</span>
+        <span class="chip">Atendimento no quiosque</span>
       </div>
       <div class="acoes-hero">
         <button class="btn-grande pulsa" id="btnComecar" type="button">Quero me cadastrar <span aria-hidden="true">→</span></button>
-        <button class="btn-sec" id="btnVerDecorado" type="button"> Ver o decorado</button>
+        <button class="btn-sec" id="btnVerPlanta" type="button">Ver o projeto na planta</button>
       </div>
       <small class="nota-mini">Leva menos de 3 minutos. Toque no botão para começar.</small>
     </div>
   </div>
   <div class="faixa-rolante" aria-hidden="true"><div id="rolante"></div></div>
+  <p class="nota-programa" id="notaPrograma"></p>
 </section>
 
-<!-- ============ ABA: CONHEÇA O projeto na planta============ -->
-<section id="tela-decorado" class="tela">
+<!-- ============ ABA: PROJETO NA PLANTA ============ -->
+<section id="tela-planta" class="tela">
   <div class="dec-wrap">
     <div class="dec-cab">
-      <span class="selo">Conheça o projeto na planta</span>
+      <span class="selo">Projeto na planta</span>
       <h2 id="decTitulo"></h2>
       <p id="decSub"></p>
     </div>
-    <h3 class="dec-h3"> Escolha um empreendimento</h3>
+    <h3 class="dec-h3">Escolha o seu empreendimento</h3>
     <div class="dec-grid" id="decGrid"></div>
     <div id="decVideosSecao">
-      <h3 class="dec-h3"> Vídeos</h3>
+      <h3 class="dec-h3">Vídeos</h3>
       <div class="dec-videos" id="decVideos"></div>
     </div>
     <div class="dec-cta">
-      <p>Gostou? Dê o primeiro passo: leva menos de 3 minutos.</p>
+      <p id="decCtaTxt"></p>
       <button class="btn-grande" id="btnDecCadastro" type="button">Quero me cadastrar <span aria-hidden="true">→</span></button>
     </div>
     <p class="aviso-legal" id="decAviso"></p>
@@ -399,7 +430,7 @@
 
       <!-- Etapa 3 -->
       <div class="etapa" data-etapa="2">
-        <h2>3. Sua renda</h2>
+        <h2>3. Renda e empreendimento</h2>
         <div class="campo" data-campo="ocupacao">
           <label for="ocupacao">Como você trabalha?</label>
           <select id="ocupacao">
@@ -416,6 +447,12 @@
           <div class="dica">Informe o valor bruto aproximado. Pode ser uma estimativa.</div>
           <div class="erro"></div>
         </div>
+        <div class="campo" data-campo="empreendimentos" id="campoEmp">
+          <span class="rotulo">Qual empreendimento você mais gostou? <span class="opc">(opcional, pode marcar mais de um)</span></span>
+          <div class="opcoes emp" id="opcoesEmp" role="group"></div>
+          <div class="dica">Se ainda não decidiu, deixe em branco. A nossa equipe mostra as opções no atendimento.</div>
+          <div class="erro"></div>
+        </div>
         <div class="campo" data-campo="consentimento">
           <label class="consent" for="consentimento">
             <input type="checkbox" id="consentimento">
@@ -428,7 +465,7 @@
       <div class="botoes">
         <button type="button" class="btn btn-voltar" id="btnVoltar">← Voltar</button>
         <button type="button" class="btn btn-proximo" id="btnProximo">Continuar →</button>
-        <button type="submit" class="btn btn-finalizar" id="btnFinalizar" style="display:none">Finalizar cadastro ✓</button>
+        <button type="submit" class="btn btn-finalizar" id="btnFinalizar" style="display:none">Finalizar cadastro</button>
       </div>
     </form>
     <button type="button" class="link-cancelar" id="btnCancelar">Cancelar e voltar ao início</button>
@@ -470,26 +507,31 @@
       <ul class="levar" id="resLevar"></ul>
     </div>
     <p class="res-apoio" id="resApoio"></p>
+    <p class="res-interesse" id="resInteresse"></p>
     <div class="protocolo">Seu protocolo: <b id="resProtocolo"></b></div>
     <p class="aviso-legal" id="resAviso"></p>
     <button class="btn btn-novo" id="btnNovo" type="button">Novo cadastro</button>
-    <button class="btn-link" id="btnResDecorado" type="button"> Conhecer o o projeto na planta enquanto isso</button>
+    <button class="btn-link" id="btnResPlanta" type="button">Ver o projeto na planta enquanto isso</button>
     <div class="reinicio" id="reinicio"></div>
   </div>
 </section>
 
 <div class="visor" id="visor" role="dialog" aria-modal="true" aria-labelledby="visorTitulo">
   <div class="visor-caixa">
-    <div class="visor-topo"><h3 id="visorTitulo"></h3><button class="visor-x" id="visorFechar" type="button" aria-label="Fechar">✕</button></div>
+    <div class="visor-topo"><h3 id="visorTitulo"></h3><button class="visor-x" id="visorFechar" type="button" aria-label="Fechar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="visor-abas" id="visorAbas">
-      <button type="button" data-pg="p2"><span class="ico"> </span>Imagens<span class="ext"> e plantas</span></button>
-      <button type="button" data-pg="p1"><span class="ico"> </span>Fachada<span class="ext"> e dados</span></button>
-      <button type="button" data-pg="resumo"><span class="ico"> </span>Resumo</button>
+      <button type="button" data-pg="p2">Imagens<span class="ext"> e plantas</span></button>
+      <button type="button" data-pg="p1">Fachada<span class="ext"> e dados</span></button>
+      <button type="button" data-pg="resumo">Resumo</button>
       <span class="visor-zoom" id="visorZoom"><button type="button" id="zMenos" aria-label="Diminuir">−</button><span id="zTxt">100%</span><button type="button" id="zMais" aria-label="Aumentar">+</button></span>
     </div>
     <div class="visor-cena" id="visorCena"><img id="visorImg" alt=""></div>
     <div class="visor-resumo" id="visorResumo" style="display:none"></div>
-    <div class="visor-rodape"><small>Imagens e plantas meramente ilustrativas.</small><button class="btn" id="visorCadastro" type="button">Quero me cadastrar →</button></div>
+    <div class="visor-rodape">
+      <small>Imagens e plantas meramente ilustrativas.</small>
+      <button class="btn btn-int" id="visorInteresse" type="button" aria-pressed="false"><svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7"/></svg><span class="t">Tenho interesse</span></button>
+      <button class="btn" id="visorCadastro" type="button">Quero me cadastrar →</button>
+    </div>
   </div>
 </div>
 
@@ -516,7 +558,7 @@ function mostrar(nome) {
   $("#tela-" + nome).classList.add("ativa");
   document.body.dataset.tela = nome;
   $$(".aba").forEach(b => b.classList.toggle("ativa", b.dataset.aba === nome));
-  if (nome !== "decorado") { fecharVisor(); $$("#tela-decorado video").forEach(v => v.pause()); }
+  if (nome !== "planta") { fecharVisor(); $$("#tela-planta video").forEach(v => v.pause()); }
   if (videoHero) { if (nome === "inicio") videoHero.play().catch(() => {}); else videoHero.pause(); }
   window.scrollTo({ top: 0 });
   telaAtual = nome;
@@ -528,7 +570,8 @@ const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 
 /* ---------- Topo, frases, rolante ---------- */
 $("#nomeEmpreendimento").textContent = C.empreendimento;
-$("#rolante").innerHTML = [...C.frases, ...C.frases].map(f => `<span> ${f}</span>`).join("");
+$("#rolante").innerHTML = [...C.frases, ...C.frases].map(f => `<span>${esc(f)}</span>`).join("");
+$("#notaPrograma").textContent = C.notaPrograma || ""; $("#notaPrograma").style.display = C.notaPrograma ? "" : "none";
 let idxFrase = 0;
 const elFrase = $("#frase");
 elFrase.textContent = C.frases[0];
@@ -582,22 +625,42 @@ setInterval(() => {
   </svg>${selo}`;
 })();
 
-/* ---------- Aba "Conheça o projeto na planta " ---------- */
-const D = C.decorado || { empreendimentos: [] };
+/* ---------- Ícones (desenhos próprios, sem emoji) ---------- */
+const svg = (d, cls = "") => `<svg ${cls ? `class="${cls}" ` : ""}viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICONES = {
+  ck: svg('<path d="M5 12.5 10 17.5 19 7"/>', "ck"),
+  pin: svg('<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'),
+  documento: svg('<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M6 16c.8-1.6 4.2-1.6 6 0M14.5 10h4M14.5 14h4"/>'),
+  renda: svg('<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/>'),
+  endereco: svg('<path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'),
+};
+
+/* ---------- Aba "Projeto na planta" + interesse ---------- */
+const D = C.planta || { empreendimentos: [] };
 const EMPS = D.empreendimentos || [];
-(function montarDecorado() {
-  $("#decTitulo").textContent = D.titulo || "Conheça o projeto na planta";
+const interesses = new Set();            // ids dos empreendimentos que a pessoa marcou
+const nomesInteresse = () => EMPS.filter(e => interesses.has(e.id)).map(e => e.nome);
+let empAtual = null, pgAtual = "p2", zoom = 1;
+(function montarPlanta() {
+  $("#decTitulo").textContent = D.titulo || "Veja o projeto na planta";
   $("#decSub").textContent = D.subtitulo || "";
   $("#decAviso").textContent = D.aviso || "";
-  $("#decGrid").innerHTML = EMPS.map(e => `<button type="button" class="dec-card" data-id="${esc(e.id)}">
-      <img loading="lazy" src="decorado/${esc(e.id)}-capa.jpg" alt="Fachada do ${esc(e.nome)}">
+  $("#decGrid").innerHTML = EMPS.map(e => `<article class="dec-card" data-id="${esc(e.id)}">
+      <button type="button" class="dec-foto" data-acao="ver" aria-label="Ver plantas e imagens: ${esc(e.nome)}">
+        <img loading="lazy" src="decorado/${esc(e.id)}-capa.jpg" alt="Fachada do ${esc(e.nome)}"><span class="dec-marca">Seu interesse</span>
+      </button>
       <div class="dec-card-corpo">
         <h4>${esc(e.nome)}</h4>
         <p class="dec-meta">${e.apartamentos ? esc(e.apartamentos) + " apartamentos · " + esc(e.metragem) : "Apartamentos de " + esc(e.metragem)}</p>
-        <p class="dec-loc"> ${esc(e.ondeFica)}</p>
+        <p class="dec-loc">${ICONES.pin}<span>${esc(e.ondeFica)}</span></p>
         <div class="dec-chips">${(e.lazer || []).slice(0, 3).map(l => `<span>${esc(l)}</span>`).join("")}</div>
-        <span class="dec-ver">Ver apartamentos e plantas →</span>
-      </div></button>`).join("");
+        <div class="dec-acoes">
+          <button type="button" class="btn-ver" data-acao="ver">Ver a planta</button>
+          <button type="button" class="btn-int" data-acao="interesse" aria-pressed="false">${ICONES.ck}<span class="t">Tenho interesse</span></button>
+        </div>
+      </div></article>`).join("");
+  $("#opcoesEmp").innerHTML = EMPS.map(e => `<input type="checkbox" id="emp-${esc(e.id)}" value="${esc(e.id)}"><label for="emp-${esc(e.id)}">${esc(e.nome)}</label>`).join("");
+  $("#campoEmp").style.display = EMPS.length ? "" : "none";
   const vs = C.videos || [];
   $("#decVideosSecao").style.display = vs.length ? "" : "none";
   $("#decVideos").innerHTML = vs.map(v => `<figure class="dec-video${v.retrato === false ? " paisagem" : ""}">
@@ -608,13 +671,32 @@ const EMPS = D.empreendimentos || [];
 // só um vídeo toca por vez
 document.addEventListener("play", e => { $$("video").forEach(v => { if (v !== e.target) v.pause(); }); }, true);
 
-let empAtual = null, pgAtual = "p2", zoom = 1;
+// mantém cartões, botão do visor, texto da barra de baixo e etapa 3 do formulário sempre iguais
+function atualizarInteresses() {
+  $$("#decGrid .dec-card").forEach(c => {
+    const on = interesses.has(c.dataset.id), b = $("[data-acao=interesse]", c);
+    c.classList.toggle("marcado", on); b.setAttribute("aria-pressed", on); $(".t", b).textContent = on ? "Marcado" : "Tenho interesse";
+  });
+  const bv = $("#visorInteresse"), on = !!empAtual && interesses.has(empAtual.id);
+  bv.setAttribute("aria-pressed", on); $(".t", bv).textContent = on ? "Interesse marcado" : "Tenho interesse";
+  $$("#opcoesEmp input").forEach(i => { i.checked = interesses.has(i.value); });
+  const n = interesses.size, nomes = nomesInteresse();
+  $("#decCtaTxt").textContent = n === 0 ? (D.chamadaFinal || "Gostou? Faça o seu cadastro.")
+    : n === 1 ? `Você marcou o ${nomes[0]}. Agora é só fazer o seu cadastro, leva menos de 3 minutos.`
+    : `Você marcou ${n} empreendimentos. Agora é só fazer o seu cadastro, leva menos de 3 minutos.`;
+}
+function alternarInteresse(id) {
+  if (!EMPS.some(e => e.id === id)) return;
+  interesses.has(id) ? interesses.delete(id) : interesses.add(id);
+  atualizarInteresses();
+}
+
 function abrirVisor(id) {
   empAtual = EMPS.find(e => e.id === id); if (!empAtual) return;
   pgAtual = "p2"; zoom = 1;
   $("#visorTitulo").textContent = empAtual.nome;
   $("#visor").classList.add("aberto"); document.body.style.overflow = "hidden";
-  desenharVisor();
+  desenharVisor(); atualizarInteresses();
 }
 function fecharVisor() { $("#visor").classList.remove("aberto"); document.body.style.overflow = ""; }
 function htmlResumo(e) {
@@ -624,7 +706,7 @@ function htmlResumo(e) {
     <div class="res-stats">${stat("Apartamentos", aptos)}${stat("Metragem dos apartamentos", e.metragem)}${stat("Vagas", e.vagas)}${stat("Lojas / comércio", e.lojas)}${stat("Área total construída", e.areaConstruida)}</div>
     <h4>Tipos de apartamento</h4>
     <table><thead><tr><th>Tipo</th><th>Área</th><th>Unidades</th></tr></thead><tbody>${(e.tipos || []).map(t => `<tr><td>${esc(t.nome)}</td><td>${esc(t.area)}</td><td>${esc(t.unidades)}</td></tr>`).join("")}</tbody></table>
-    <h4> Onde fica</h4><p>${esc(e.localizacao)}</p>
+    <h4 class="com-icone">${ICONES.pin}Onde fica</h4><p>${esc(e.localizacao)}</p>
     <h4>Lazer e estrutura</h4><div class="dec-chips">${(e.lazer || []).map(l => `<span>${esc(l)}</span>`).join("")}</div>
     <h4>${esc(e.pavimentosTitulo || "Pavimento a pavimento")}</h4>
     <table><tbody>${(e.pavimentos || []).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("")}</tbody></table>`;
@@ -652,7 +734,12 @@ function mudarZoom(novo) {
   zoom = novo; c.style.setProperty("--z", zoom); $("#zTxt").textContent = Math.round(zoom * 100) + "%";
   c.scrollTop = topo; c.scrollLeft = Math.max(0, esq);
 }
-$("#decGrid").addEventListener("click", e => { const c = e.target.closest("[data-id]"); if (c) abrirVisor(c.dataset.id); });
+$("#decGrid").addEventListener("click", e => {
+  const c = e.target.closest("[data-id]"), b = e.target.closest("[data-acao]"); if (!c || !b) return;
+  if (b.dataset.acao === "interesse") alternarInteresse(c.dataset.id); else abrirVisor(c.dataset.id);
+});
+$("#visorInteresse").addEventListener("click", () => { if (empAtual) alternarInteresse(empAtual.id); });
+$("#opcoesEmp").addEventListener("change", e => { const i = e.target.closest("input"); if (i) alternarInteresse(i.value); });
 $("#visorAbas").addEventListener("click", e => { const b = e.target.closest("[data-pg]"); if (b) { pgAtual = b.dataset.pg; desenharVisor(); } });
 $("#zMais").addEventListener("click", () => mudarZoom(zoom + 0.5));
 $("#zMenos").addEventListener("click", () => mudarZoom(zoom - 0.5));
@@ -660,7 +747,7 @@ $("#visorFechar").addEventListener("click", fecharVisor);
 $("#visor").addEventListener("click", e => { if (e.target === $("#visor")) fecharVisor(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") fecharVisor(); });
 $$(".aba").forEach(b => b.addEventListener("click", () => mostrar(b.dataset.aba)));
-$("#btnVerDecorado").addEventListener("click", () => mostrar("decorado"));
+$("#btnVerPlanta").addEventListener("click", () => mostrar("planta"));
 $("#btnDecCadastro").addEventListener("click", () => { mostrar("form"); irEtapa(0); });
 $("#visorCadastro").addEventListener("click", () => { mostrar("form"); irEtapa(0); });
 
@@ -706,12 +793,13 @@ const REGRAS = {
   cadUnico: () => !radio("cadUnico") ? "Escolha uma opção." : "",
   ocupacao: () => !val("ocupacao") ? "Escolha uma opção." : "",
   renda: () => rendaNumero() === null ? "Informe a renda (pode ser 0)." : "",
+  empreendimentos: () => "",   // opcional
   consentimento: () => !$("#consentimento").checked ? "É necessário aceitar para concluir." : "",
 };
 const ETAPAS = [
   ["nome", "cpf", "nascimento", "telefone", "email"],
   ["cidade", "bairro", "estadoCivil", "pessoasFamilia", "possuiImovel", "jaBeneficiado", "cadUnico"],
-  ["ocupacao", "renda", "consentimento"],
+  ["ocupacao", "renda", "empreendimentos", "consentimento"],
 ];
 function marcarErro(campo, msg) {
   const box = $(`[data-campo="${campo}"]`);
@@ -767,7 +855,7 @@ function montarCorpo() {
     nome: val("nome"), cpf: dig(val("cpf")), nascimento: nascIso(val("nascimento")), telefone: dig(val("telefone")), email: val("email"),
     cidade: val("cidade"), bairro: val("bairro"), estadoCivil: val("estadoCivil"), pessoasFamilia: Number(val("pessoasFamilia")),
     possuiImovel: radio("possuiImovel"), jaBeneficiado: radio("jaBeneficiado"), cadUnico: radio("cadUnico"),
-    ocupacao: val("ocupacao"), renda: rendaNumero(), consentimento: $("#consentimento").checked, origem, website: val("website"),
+    ocupacao: val("ocupacao"), renda: rendaNumero(), empreendimentos: nomesInteresse(), consentimento: $("#consentimento").checked, origem, website: val("website"),
   };
 }
 async function enviar() {
@@ -828,9 +916,11 @@ function mostrarResultado(r) {
   texto("resMsg", T.destaque || res.mensagem);
   texto("resChamada", T.chamada);
   texto("resLocalNome", "Compareça: " + L.nome);
-  texto("resLocalEnd", L.endereco ? " " + L.endereco : "");
-  texto("resLocalHorario", L.horario ? " " + L.horario : "");
-  $("#resLevar").innerHTML = (L.levar || []).map(x => `<li><i aria-hidden="true">${esc(x.icone || "✔")}</i><span>${esc(x.texto)}</span></li>`).join("");
+  texto("resLocalEnd", L.endereco ? "Endereço: " + L.endereco : "");
+  texto("resLocalHorario", L.horario ? "Horário: " + L.horario : "");
+  $("#resLevar").innerHTML = (L.levar || []).map(x => `<li><i>${ICONES[x.icone] || ICONES.ck}</i><span>${esc(x.texto)}</span></li>`).join("");
+  const nomes = nomesInteresse();
+  texto("resInteresse", nomes.length ? "Empreendimento de interesse registrado: " + nomes.join(", ") + "." : "");
   texto("resApoio", T.apoio);
   texto("resAviso", T.aviso);
   $("#resProtocolo").textContent = r.protocolo;
@@ -858,6 +948,7 @@ $("#btnNovo").addEventListener("click", reiniciar);
 /* ---------- Reinício e inatividade (privacidade no quiosque) ---------- */
 function limparDados() {
   $("#form").reset(); $("#cidade").value = "Teresina";
+  interesses.clear(); atualizarInteresses();
   $$("[data-campo]").forEach(b => { b.classList.remove("tem-erro"); $(".erro", b).textContent = ""; });
   $("#modalInativo").classList.remove("aberto"); clearInterval(timerModal);
   irEtapa(0);
@@ -868,12 +959,12 @@ function reiniciar() {
   mostrar("inicio");
 }
 // da tela final, a pessoa pode ir ver o projeto na planta (os dados do cadastro já foram apagados da tela)
-$("#btnResDecorado").addEventListener("click", () => { clearInterval(timerReinicio); limparDados(); mostrar("projeto na planta); });
+$("#btnResPlanta").addEventListener("click", () => { clearInterval(timerReinicio); limparDados(); mostrar("planta"); });
 let timerInativo = null, timerModal = null;
 function agendarInatividade() {
   clearTimeout(timerInativo);
-  if (telaAtual === "projeto na planta" && origem === "quiosque") {   // no quiosque, o projeto na planta também volta sozinho ao início
-    timerInativo = setTimeout(() => mostrar("inicio"), (C.tempoInatividadeDecoradoSeg || 90) * 1000);
+  if (telaAtual === "planta" && origem === "quiosque") {   // no quiosque, a aba da planta também volta sozinha ao início (e apaga as marcações)
+    timerInativo = setTimeout(() => { interesses.clear(); atualizarInteresses(); mostrar("inicio"); }, (C.tempoInatividadePlantaSeg || 90) * 1000);
     return;
   }
   if (telaAtual !== "form") return;
@@ -886,8 +977,13 @@ function agendarInatividade() {
 $("#btnContinuarAqui").addEventListener("click", () => { clearInterval(timerModal); $("#modalInativo").classList.remove("aberto"); agendarInatividade(); });
 
 irEtapa(0);
+atualizarInteresses();
 // expõe para testes
 window.__mcmv = { reiniciar };
+})();
+</script>
+</body>
+</html>
 })();
 </script>
 </body>
