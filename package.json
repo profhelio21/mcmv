@@ -1,0 +1,14 @@
+{
+  "name": "mcmv-cadastro",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cadastro de interessados no Minha Casa Minha Vida - quiosque Shopping da Praça Pedro II",
+  "scripts": {
+    "dev": "node dev-server.mjs",
+    "test": "node test/smoke.mjs"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
