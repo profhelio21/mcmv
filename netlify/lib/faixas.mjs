@@ -1,30 +1,35 @@
-# Viabilidade — Simulador de Empreendimentos
+// Faixas de renda do Minha Casa, Minha Vida (imóveis urbanos).
+// Valores em vigor desde abril/2026 (Portaria MCID nº 333/2026):
+//   Faixa 1: até R$ 3.200      Faixa 2: até R$ 5.000
+//   Faixa 3: até R$ 9.600      Faixa 4: até R$ 13.000
+// Se o governo atualizar os limites, altere somente esta lista.
+export const FAIXAS = [
+  { numero: 1, ate: 3200, nome: "Faixa 1" },
+  { numero: 2, ate: 5000, nome: "Faixa 2" },
+  { numero: 3, ate: 9600, nome: "Faixa 3" },
+  { numero: 4, ate: 13000, nome: "Faixa 4" },
+];
 
-Página única (`public/index.html`) + uma função do Netlify (`netlify/functions/ia.mjs`) que liga o
-Assistente de IA à Groq. Os dados do simulador ficam só no navegador de quem usa (autosave no `localStorage`).
+export function faixaDaRenda(renda) {
+  return FAIXAS.find((f) => renda <= f.ate) || null;
+}
 
-## Publicar (precisa ser pelo GitHub)
-O Netlify Drop (arrastar pasta) **não publica funções**, então agora use o GitHub:
-1. Crie um repositório e envie, mantendo as pastas: `public/index.html`, `netlify/functions/ia.mjs`, `netlify.toml`, `README.md`.
-2. No Netlify: *Add new site → Import from Git* → escolha o repositório. Não precisa de comando de build.
-
-## Chave da Groq (Assistente de IA)
-1. Crie a chave em https://console.groq.com/keys
-2. No Netlify: **Site configuration → Environment variables → Add a variable**
-   - Key: `GROQ_API_KEY`
-   - Value: a chave (começa com `gsk_`)
-3. **Faça um novo deploy** (Deploys → Trigger deploy → Deploy site). Variável nova só vale depois disso.
-
-A chave fica só no servidor do Netlify: não aparece no código da página nem no navegador de ninguém.
-
-## Proteções da função `/api/ia`
-- Só aceita chamadas vindas da própria página (bloqueia outros sites).
-- Modelo fixo (`openai/gpt-oss-120b`); limite de tamanho da conversa e de saída; 20 mensagens/minuto por IP.
-- Esse limite é "de boa-fé" (vale por instância da função). Para teto de verdade, defina limite de gasto/uso
-  na sua conta da Groq e, se desconfiar de abuso, gere uma chave nova e troque no Netlify.
-
-## Observações
-- A página usa `noindex` (não aparece no Google), mas **quem tiver o link abre** e pode usar o Assistente
-  (consumindo a sua cota da Groq). Compartilhe o link só com quem deve usar.
-- O empreendimento de exemplo que já vem preenchido é visível para quem abrir o link.
-- Simulações salvas e autosave são por navegador. Para levar a outro computador: **Config. (JSON)** e **Importar JSON**.
+// Resultado da inscrição.
+// Para o interessado: TODO cadastro concluído é "aprovado" para seguir ao atendimento presencial
+// (ele é convidado a comparecer com documentos), independentemente da renda informada.
+// Isto NÃO é aprovação de financiamento — esse aviso fica na tela final.
+//
+// Para a equipe (uso interno, aparece no painel/Excel e não na tela do interessado):
+//   triagem = "compativel" -> renda dentro de uma faixa do programa e sem imóvel/benefício declarado
+//   triagem = "verificar"  -> renda acima das faixas, ou declarou ter imóvel/já ter sido beneficiado
+export function avaliar(d) {
+  const faixa = faixaDaRenda(d.renda);
+  const verificar = !faixa || d.possuiImovel === "sim" || d.jaBeneficiado === "sim";
+  return {
+    nivel: "aprovado",
+    triagem: verificar ? "verificar" : "compativel",
+    faixa: faixa ? faixa.nome : null,
+    titulo: "Cadastro aprovado!",
+    mensagem: "Seu imóvel está mais próximo do que você imagina.",
+  };
+}
