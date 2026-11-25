@@ -35,6 +35,14 @@
   .card{background:#fff;border:1px solid var(--linha);border-radius:14px;padding:1rem 1.1rem}
   .card small{color:var(--cinza);font-weight:600;display:block}
   .card b{font-size:1.7rem;color:var(--verde-escuro);display:block;line-height:1.2}
+  .resumo{background:#fff;border:1px solid var(--linha);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+  .resumo h2{font-size:1rem;color:var(--verde-escuro)}
+  .resumo p.nota{color:var(--cinza);font-size:.82rem;margin:.1rem 0 .6rem}
+  .resumo .lin{display:grid;grid-template-columns:minmax(9rem,15rem) 1fr 4.5rem;gap:.7rem;align-items:center;margin:.4rem 0}
+  .resumo .bar{height:.7rem;background:var(--menta);border-radius:99px;overflow:hidden}
+  .resumo .bar i{display:block;height:100%;background:var(--verde);border-radius:99px}
+  .resumo .lin b{text-align:right;color:var(--verde-escuro);white-space:nowrap}
+  .resumo .lin.sem span{color:var(--cinza)}
   .barra{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:.9rem}
   .barra input[type=search]{flex:1;min-width:12rem;font:inherit;padding:.65rem .9rem;border:1px solid var(--linha);border-radius:10px}
   .barra select{font:inherit;padding:.6rem .8rem;border:1px solid var(--linha);border-radius:10px;background:#fff}
@@ -77,9 +85,9 @@
 <!-- PAINEL -->
 <div id="telaPainel" class="oculto">
   <header>
-    <h1>📋 Interessados · Minha Casa, Minha Vida</h1>
-    <button class="btn sec" id="btnAtualizar" type="button">↻ Atualizar</button>
-    <button class="btn sol" id="btnExcel" type="button">⬇ Baixar Excel (.xlsx)</button>
+    <h1>Interessados · Minha Casa, Minha Vida</h1>
+    <button class="btn sec" id="btnAtualizar" type="button">Atualizar</button>
+    <button class="btn sol" id="btnExcel" type="button">Baixar Excel (.xlsx)</button>
     <button class="btn sec" id="btnSair" type="button">Sair</button>
   </header>
   <main>
@@ -90,15 +98,21 @@
       <div class="card"><small>Renda média da família</small><b id="kRenda">—</b></div>
       <div class="card"><small>Pelo quiosque</small><b id="kQuiosque">0</b></div>
     </div>
+    <div class="resumo">
+      <h2>Interesse por empreendimento</h2>
+      <p class="nota">Quantas pessoas marcaram cada empreendimento. Cada pessoa pode marcar mais de um.</p>
+      <div id="resumoEmp"></div>
+    </div>
     <div class="barra">
       <input type="search" id="busca" placeholder="Buscar por nome, CPF, telefone ou bairro…">
       <select id="filtroFaixa">
         <option value="">Todas as faixas</option><option>Faixa 1</option><option>Faixa 2</option><option>Faixa 3</option><option>Faixa 4</option><option value="__acima">Acima das faixas</option>
       </select>
+      <select id="filtroEmp"><option value="">Todos os empreendimentos</option></select>
     </div>
     <div class="tabela-wrap">
       <table>
-        <thead><tr><th>Interessado</th><th>Data/Hora</th><th>Nome</th><th>Telefone</th><th>Bairro</th><th>Renda familiar</th><th>Faixa</th><th>Triagem</th></tr></thead>
+        <thead><tr><th>Interessado</th><th>Data/Hora</th><th>Nome</th><th>Telefone</th><th>Interesse</th><th>Bairro</th><th>Renda familiar</th><th>Faixa</th><th>Triagem</th></tr></thead>
         <tbody id="corpo"></tbody>
       </table>
       <div class="vazio oculto" id="vazio">Nenhum cadastro encontrado.</div>
@@ -158,14 +172,14 @@ $("#btnExcel").addEventListener("click", async () => {
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   } catch (e) { if (e.message !== "sessao") aviso("Não foi possível gerar a planilha."); }
-  finally { b.disabled = false; b.textContent = "⬇ Baixar Excel (.xlsx)"; }
+  finally { b.disabled = false; b.textContent = "Baixar Excel (.xlsx)"; }
 });
 
 async function carregar() {
   try {
     const r = await api("inscricoes"); const j = await r.json();
-    todos = j.itens.map(x => ({ ...x, busca: `${x.nome} ${x.cpf} ${x.telefone} ${x.bairro} ${x.protocolo}`.toLowerCase() }));
-    indicadores(); desenhar();
+    todos = j.itens.map(x => ({ ...x, empreendimentos: x.empreendimentos || [], busca: `${x.nome} ${x.cpf} ${x.telefone} ${x.bairro} ${x.protocolo} ${(x.empreendimentos || []).join(" ")}`.toLowerCase() }));
+    indicadores(); montarFiltroEmp(); desenhar();
   } catch (e) { if (e.message !== "sessao") aviso("Erro ao carregar os dados."); }
 }
 function indicadores() {
@@ -175,29 +189,50 @@ function indicadores() {
   $("#kOtimo").textContent = todos.filter(x => triagemDe(x) === "compativel").length;
   $("#kQuiosque").textContent = todos.filter(x => x.origem === "quiosque").length;
   $("#kRenda").textContent = todos.length ? brl(todos.reduce((s, x) => s + x.renda, 0) / todos.length) : "—";
+  desenharResumoEmp();
+}
+function contagemEmp() {
+  const m = new Map(); let sem = 0;
+  for (const x of todos) { if (!x.empreendimentos.length) sem++; for (const n of x.empreendimentos) m.set(n, (m.get(n) || 0) + 1); }
+  return { lista: [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR")), sem };
+}
+function montarFiltroEmp() {
+  const { lista } = contagemEmp(), sel = $("#filtroEmp"), atual = sel.value;
+  sel.innerHTML = `<option value="">Todos os empreendimentos</option>` + lista.map(([n, q]) => `<option value="${esc(n)}">${esc(n)} (${q})</option>`).join("") + `<option value="__sem">Ainda não escolheram</option>`;
+  sel.value = [...sel.options].some(o => o.value === atual) ? atual : "";
+}
+function desenharResumoEmp() {
+  const { lista, sem } = contagemEmp(), total = todos.length, max = Math.max(1, ...lista.map(l => l[1]), sem);
+  const pct = q => total ? Math.round(q / total * 100) + "%" : "0%";
+  const lin = (n, q, cls = "") => `<div class="lin ${cls}"><span>${esc(n)}</span><div class="bar"><i style="width:${(q / max) * 100}%"></i></div><b>${q} · ${pct(q)}</b></div>`;
+  $("#resumoEmp").innerHTML = total
+    ? lista.map(([n, q]) => lin(n, q)).join("") + lin("Ainda não escolheram", sem, "sem")
+    : '<span style="color:var(--cinza)">Nenhum cadastro ainda.</span>';
 }
 function desenhar() {
   const q = $("#busca").value.trim().toLowerCase();
   const qNum = q.replace(/\D/g, "");   // permite buscar CPF/telefone com ou sem pontuação
-  const f = $("#filtroFaixa").value;
+  const f = $("#filtroFaixa").value, fe = $("#filtroEmp").value;
   const lista = todos.filter(x => (!q || x.busca.includes(q) || (qNum && x.cpf.includes(qNum)) || (qNum && x.telefone.includes(qNum)))
-      && (!f || (f === "__acima" ? !x.faixa : x.faixa === f))).slice().reverse();
+      && (!f || (f === "__acima" ? !x.faixa : x.faixa === f))
+      && (!fe || (fe === "__sem" ? !x.empreendimentos.length : x.empreendimentos.includes(fe)))).slice().reverse();
   $("#vazio").classList.toggle("oculto", lista.length > 0);
   $("#corpo").innerHTML = lista.map(x => `<tr data-k="${esc(x.chave)}">
     <td class="num">Interessado ${x.numero}</td><td>${esc(fmtDH(x.criadoEm))}</td><td><b>${esc(x.nome)}</b></td>
     <td><a class="wa" href="https://wa.me/55${esc(x.telefone)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(fmtTel(x.telefone))}</a></td>
-    <td>${esc(x.bairro)}</td><td>${brl(x.renda)}</td><td>${esc(x.faixa || "Acima das faixas")}</td>
+    <td>${esc(x.empreendimentos.join(", ") || "—")}</td><td>${esc(x.bairro)}</td><td>${brl(x.renda)}</td><td>${esc(x.faixa || "Acima das faixas")}</td>
     <td><span class="tag ${esc(triagemDe(x))}">${esc(R.tri[triagemDe(x)] || "—")}</span></td></tr>`).join("");
 }
 $("#busca").addEventListener("input", desenhar);
 $("#filtroFaixa").addEventListener("change", desenhar);
+$("#filtroEmp").addEventListener("change", desenhar);
 $("#corpo").addEventListener("click", e => { const tr = e.target.closest("tr"); if (tr) abrir(tr.dataset.k); });
 
 function abrir(chave) {
   const x = todos.find(t => t.chave === chave); if (!x) return;
   const linhas = [
     ["Protocolo", x.protocolo], ["Cadastrado em", fmtDH(x.criadoEm)], ["CPF", fmtCpf(x.cpf)], ["Nascimento", x.nascimento.split("-").reverse().join("/")],
-    ["Telefone / WhatsApp", fmtTel(x.telefone)], ["E-mail", x.email || "—"], ["Cidade / Bairro", `${x.cidade} / ${x.bairro}`],
+    ["Telefone / WhatsApp", fmtTel(x.telefone)], ["Empreendimento(s) de interesse", x.empreendimentos.join(", ") || "Ainda não escolheu"], ["E-mail", x.email || "—"], ["Cidade / Bairro", `${x.cidade} / ${x.bairro}`],
     ["Estado civil", R.estadoCivil[x.estadoCivil]], ["Pessoas na família", x.pessoasFamilia], ["Ocupação", R.ocupacao[x.ocupacao]],
     ["Renda familiar", brl(x.renda)], ["Faixa estimada", x.faixa || "Acima das faixas"], ["Triagem interna", R.tri[triagemDe(x)] || "—"], ["Possui imóvel?", R.sn[x.possuiImovel]],
     ["Já foi beneficiado?", R.sn[x.jaBeneficiado]], ["CadÚnico?", R.sn[x.cadUnico]], ["Origem", x.origem === "quiosque" ? "Quiosque" : "Link"],
