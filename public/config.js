@@ -3,7 +3,12 @@
 // ============================================================
 window.MCMV_CONFIG = {
   // Nome que aparece no topo da página
-  empreendimento: "Minha Casa, Minha Vida · Centro de Teresina",
+  // Texto ao lado do logo, no topo da página
+  empreendimento: "Pré-cadastro de interessados · Centro de Teresina",
+
+  // Aviso curto no rodapé da tela inicial (deixa claro que este é um pré-cadastro e quem analisa o crédito)
+  notaPrograma:
+    "Pré-cadastro de interesse. O Minha Casa, Minha Vida é um programa do Governo Federal; a análise de crédito e a contratação do financiamento são feitas pela instituição financeira.",
 
   // Onde a pessoa deve comparecer depois de concluir o cadastro
   local: {
@@ -12,9 +17,10 @@ window.MCMV_CONFIG = {
     horario: "", // ex.: "Segunda a sábado, das 9h às 18h" (deixe vazio para não mostrar)
     // O que a pessoa deve levar (aparece como lista na tela final)
     levar: [
-      { icone: "📄", texto: "Documento de identificação com foto" },
-      { icone: "💼", texto: "Comprovante de renda" },
-      { icone: "🏠", texto: "Comprovante de endereço" },
+      // icone: "documento", "renda" ou "endereco" (desenhos já prontos no site)
+      { icone: "documento", texto: "Documento de identificação com foto" },
+      { icone: "renda", texto: "Comprovante de renda" },
+      { icone: "endereco", texto: "Comprovante de endereço" },
     ],
   },
 
@@ -31,7 +37,7 @@ window.MCMV_CONFIG = {
   },
 
   // Vídeos (ilustrativos). Coloque os arquivos na pasta public/videos/ e liste aqui.
-  //  • O primeiro vídeo toca na tela inicial (e todos aparecem na aba "Conheça o decorado").
+  //  • O primeiro vídeo toca na tela inicial (e todos aparecem na aba "Projeto na planta").
   //  • poster = imagem de capa (opcional).  Vídeos na vertical (9:16) são reconhecidos sozinhos.
   //  • Se a lista ficar vazia, a tela inicial mostra uma animação de apresentação.
   videos: [
@@ -43,11 +49,14 @@ window.MCMV_CONFIG = {
     },
   ],
 
-  // Aba "Conheça o decorado": uma entrada por empreendimento.
-  // As imagens ficam em public/decorado/  →  <id>-capa.jpg (cartão), <id>-p1.jpg (fachada e dados), <id>-p2.jpg (imagens e plantas)
-  decorado: {
-    titulo: "Conheça o decorado",
-    subtitulo: "Veja como serão os apartamentos e as áreas de lazer. Toque em um empreendimento para ver as imagens e plantas.",
+  // Aba "Projeto na planta": uma entrada por empreendimento.
+  // As imagens ficam na pasta public/decorado/ (o nome da pasta continua o mesmo): <id>-capa.jpg (cartão), <id>-p1.jpg (fachada e dados), <id>-p2.jpg (imagens e plantas)
+  // O interessado pode marcar "Tenho interesse" em cada empreendimento. As escolhas vão para o painel e para a planilha Excel.
+  // O campo "nome" é o que aparece no relatório: se mudar o nome depois, as contagens antigas ficam separadas das novas.
+  planta: {
+    titulo: "Veja o projeto na planta",
+    subtitulo: "Confira as plantas e as imagens de cada empreendimento e marque o que você mais gostou. Essa escolha ajuda a nossa equipe a atender você melhor.",
+    chamadaFinal: "Gostou? Marque o empreendimento e dê o primeiro passo: leva menos de 3 minutos.",
     aviso: "Imagens, plantas e vídeos meramente ilustrativos. Para informações atualizadas de cada empreendimento, fale com a nossa equipe no quiosque.",
     empreendimentos: [
       {
@@ -203,6 +212,7 @@ window.MCMV_CONFIG = {
   ],
 
   tempoInatividadeSeg: 120, // sem tocar na tela por esse tempo → limpa os dados (privacidade no quiosque)
-  tempoInatividadeDecoradoSeg: 90, // no quiosque: sem toque na aba do decorado → volta para a tela inicial
+  tempoInatividadePlantaSeg: 90, // no quiosque: sem toque na aba "Projeto na planta", volta para a tela inicial (e apaga as marcações)
   tempoReinicioResultadoSeg: 90, // depois do resultado, volta sozinho para a tela inicial
+}; depois do resultado, volta sozinho para a tela inicial
 };
