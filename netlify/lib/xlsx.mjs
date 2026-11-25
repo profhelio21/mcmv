@@ -1,5 +1,5 @@
 // Gerador mínimo de .xlsx (sem dependências): um ZIP "stored" com os XMLs da planilha.
-// Suporta uma aba, cabeçalho estilizado, linha congelada, filtro e formato de moeda.
+// Suporta várias abas, cabeçalho estilizado, linha congelada, filtro e formatos de moeda e porcentagem.
 
 const enc = new TextEncoder();
 
@@ -90,11 +90,12 @@ function letraColuna(i) {
   return s;
 }
 
-/**
- * @param {{aba:string, colunas:{titulo:string, largura:number, tipo?:'texto'|'moeda'|'numero'}[], linhas:any[][]}} cfg
- * @returns {Buffer}
- */
-export function gerarXlsx({ aba, colunas, linhas }) {
+const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+const REL = 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+const CAB = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+const ESTILO = { moeda: 2, percentual: 3 }; // 0 = normal, 1 = cabeçalho
+
+function folha({ colunas, linhas, filtro = true }) {
   const ultima = letraColuna(colunas.length - 1);
   const totalLinhas = linhas.length + 1;
 
@@ -106,30 +107,32 @@ export function gerarXlsx({ aba, colunas, linhas }) {
     return `<c r="${ref}" t="inlineStr"${estilo ? ` s="${estilo}"` : ""}><is><t xml:space="preserve">${esc(valor)}</t></is></c>`;
   };
 
-  let xmlLinhas = `<row r="1" ht="32" customHeight="1">${colunas
-    .map((c, i) => celula(c.titulo, i, 1, 1))
-    .join("")}</row>`;
+  let xmlLinhas = `<row r="1" ht="32" customHeight="1">${colunas.map((c, i) => celula(c.titulo, i, 1, 1)).join("")}</row>`;
   linhas.forEach((l, r) => {
-    xmlLinhas += `<row r="${r + 2}">${l
-      .map((v, i) => celula(v, i, r + 2, colunas[i].tipo === "moeda" ? 2 : 0))
-      .join("")}</row>`;
+    xmlLinhas += `<row r="${r + 2}">${l.map((v, i) => celula(v, i, r + 2, ESTILO[colunas[i].tipo] || 0)).join("")}</row>`;
   });
+  const cols = colunas.map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${c.largura}" customWidth="1"/>`).join("");
 
-  const cols = colunas
-    .map((c, i) => `<col min="${i + 1}" max="${i + 1}" width="${c.largura}" customWidth="1"/>`)
-    .join("");
-
-  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
-  const REL = 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
-  const CAB = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
-
-  const sheet =
+  return (
     `${CAB}<worksheet ${NS}>` +
     `<dimension ref="A1:${ultima}${totalLinhas}"/>` +
     `<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>` +
     `<sheetFormatPr defaultRowHeight="15"/>` +
     `<cols>${cols}</cols><sheetData>${xmlLinhas}</sheetData>` +
-    `<autoFilter ref="A1:${ultima}${totalLinhas}"/></worksheet>`;
+    (filtro ? `<autoFilter ref="A1:${ultima}${totalLinhas}"/>` : "") +
+    `</worksheet>`
+  );
+}
+
+/**
+ * Uma aba:    gerarXlsx({ aba, colunas, linhas })
+ * Várias abas: gerarXlsx({ abas: [{ aba, colunas, linhas, filtro? }, ...] })
+ * colunas: { titulo, largura, tipo?: 'texto' | 'moeda' | 'numero' | 'percentual' }
+ * @returns {Buffer}
+ */
+export function gerarXlsx(cfg) {
+  const abas = cfg.abas || [cfg];
+  const n = abas.length;
 
   const estilos =
     `${CAB}<styleSheet ${NS}>` +
@@ -140,11 +143,13 @@ export function gerarXlsx({ aba, colunas, linhas }) {
     `<fill><patternFill patternType="solid"><fgColor rgb="FF0F766E"/><bgColor indexed="64"/></patternFill></fill></fills>` +
     `<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>` +
     `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
-    `<cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` +
+    `<cellXfs count="4"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` +
     `<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>` +
-    `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs>` +
+    `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>` +
+    `<xf numFmtId="9" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs>` +
     `<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
 
+  const tipoRel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
   return zip([
     {
       nome: "[Content_Types].xml",
@@ -153,27 +158,30 @@ export function gerarXlsx({ aba, colunas, linhas }) {
         `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>` +
         `<Default Extension="xml" ContentType="application/xml"/>` +
         `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>` +
-        `<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>` +
+        abas.map((_, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("") +
         `<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`,
     },
     {
       nome: "_rels/.rels",
       conteudo:
         `${CAB}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
-        `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
+        `<Relationship Id="rId1" Type="${tipoRel}/officeDocument" Target="xl/workbook.xml"/></Relationships>`,
     },
     {
       nome: "xl/workbook.xml",
-      conteudo: `${CAB}<workbook ${NS} ${REL}><sheets><sheet name="${esc(aba)}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
+      conteudo:
+        `${CAB}<workbook ${NS} ${REL}><sheets>` +
+        abas.map((a, i) => `<sheet name="${esc(a.aba)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join("") +
+        `</sheets></workbook>`,
     },
     {
       nome: "xl/_rels/workbook.xml.rels",
       conteudo:
         `${CAB}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">` +
-        `<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>` +
-        `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`,
+        abas.map((_, i) => `<Relationship Id="rId${i + 1}" Type="${tipoRel}/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join("") +
+        `<Relationship Id="rId${n + 1}" Type="${tipoRel}/styles" Target="styles.xml"/></Relationships>`,
     },
     { nome: "xl/styles.xml", conteudo: estilos },
-    { nome: "xl/worksheets/sheet1.xml", conteudo: sheet },
+    ...abas.map((a, i) => ({ nome: `xl/worksheets/sheet${i + 1}.xml`, conteudo: folha(a) })),
   ]);
 }
