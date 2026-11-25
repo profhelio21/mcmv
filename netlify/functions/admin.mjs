@@ -175,8 +175,3 @@ export default async (req) => {
 };
 
 export const config = { path: "/api/admin/*" };
-
-  return json({ erro: "Rota não encontrada." }, 404);
-};
-
-export const config = { path: "/api/admin/*" };
